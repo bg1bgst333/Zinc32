@@ -67,6 +67,7 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam){
 
 	// スタティック変数の初期化.
 	static HWND hEdit = NULL;	// エディットコントロールのウィンドウハンドルhEditをNULLで初期化.
+	static HWND hButton = NULL;	// ボタンコントロールのウィンドウハンドルhButtonをNULLで初期化.
 
 	// ウィンドウメッセージの処理.
 	switch (uMsg){	// uMsgの値ごとに処理を振り分ける.
@@ -85,6 +86,9 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam){
 
 				// エディットコントロールの作成
 				hEdit = CreateWindow(_T("Edit"), _T(""), WS_CHILD | WS_VISIBLE | WS_BORDER | ES_WANTRETURN, 0, 0, 640, 24, hwnd, (HMENU)(WM_APP + 1), lpCS->hInstance, NULL);	// CreateWindowでエディットコントロールhEditを作成.(ウィンドウクラス名は"Edit".)
+
+				// ボタンコントロールの作成
+				hButton = CreateWindow(_T("Button"), _T("ロード"), WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON, 640, 0, 80, 24, hwnd, (HMENU)(WM_APP + 2), lpCS->hInstance, NULL);	// CreateWindowでボタンコントロールhButtonを作成.(ウィンドウクラス名は"Button".)
 
 				// 常にウィンドウ作成に成功するものとする.
 				return 0;	// 0を返すと, ウィンドウ作成に成功したということになる.
@@ -107,6 +111,41 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam){
 
 			// 既定の処理へ向かう.
 			break;	// breakで抜けて, 既定の処理(DefWindowProc)へ向かう.
+
+		// コマンドが発生した時.
+		case WM_COMMAND:
+
+			// WM_COMMANDブロック
+			{
+
+				// コマンドの処理.
+				switch (LOWORD(wParam)){	// LOWORD(wParam)でリソースIDがわかるので, その値ごとに処理を振り分ける.
+
+					// "ロード"ボタン
+					case WM_APP + 2:
+
+						// WM_APP + 2ブロック
+						{
+
+							// 入力されたURLを表示.
+							TCHAR tszUrl[4096] = {0};	// tszUrlを{0}で初期化.
+							GetWindowText(hEdit, tszUrl, 4096);	// GetWindowTextでhEditにセットされたテキストを取得し, tszUrlに格納.
+							MessageBox(NULL, tszUrl, _T("Zinc"), MB_OK | MB_ICONASTERISK);	// MessageBoxでtszUrlを表示.
+
+						}
+
+						// 既定の処理へ向かう.
+						break;	// breakで抜けて, 既定の処理(DefWindowProc)へ向かう.
+
+					// それ以外.
+					default:
+
+						// 既定の処理へ向かう.
+						break;	// breakで抜けて, 既定の処理(DefWindowProc)へ向かう.
+
+				}
+
+			}
 
 		// 上記以外の時.
 		default:
