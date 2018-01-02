@@ -3,6 +3,8 @@ Microsoft Visual Studio Solution File, Format Version 9.00
 # Visual Studio 2005
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Zinc32", "Zinc32\Zinc32.vcproj", "{93D29979-20BF-422E-9DA2-61DE098A00F2}"
 EndProject
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "Zinc32Setup", "Zinc32Setup\Zinc32Setup.vdproj", "{5932E9D1-BADB-4315-BA1A-93E7E39DCF2A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -13,6 +15,10 @@ Global
 		{93D29979-20BF-422E-9DA2-61DE098A00F2}.Debug|Win32.Build.0 = Debug|Win32
 		{93D29979-20BF-422E-9DA2-61DE098A00F2}.Release|Win32.ActiveCfg = Release|Win32
 		{93D29979-20BF-422E-9DA2-61DE098A00F2}.Release|Win32.Build.0 = Release|Win32
+		{5932E9D1-BADB-4315-BA1A-93E7E39DCF2A}.Debug|Win32.ActiveCfg = Debug
+		{5932E9D1-BADB-4315-BA1A-93E7E39DCF2A}.Debug|Win32.Build.0 = Debug
+		{5932E9D1-BADB-4315-BA1A-93E7E39DCF2A}.Release|Win32.ActiveCfg = Release
+		{5932E9D1-BADB-4315-BA1A-93E7E39DCF2A}.Release|Win32.Build.0 = Release
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
