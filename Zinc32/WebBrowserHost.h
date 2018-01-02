@@ -16,10 +16,13 @@ class CWebBrowserHost : public IOleClientSite, public IOleInPlaceSite{
 		// privateメンバ変数
 		LONG m_lRef;	// 参照回数.
 		HWND m_hWnd;	// ウィンドウハンドル.
-		IWebBrowser2 *m_pWebBrowser;	// IWebBrowser2ポインタ.
+		//IWebBrowser2 *m_pWebBrowser;	// IWebBrowser2ポインタ.
 
 	// publicメンバ
 	public:
+
+		// publicメンバ変数
+		IWebBrowser2 *m_pWebBrowser;	// IWebBrowser2ポインタ.
 
 		// publicメンバ関数
 		// コンストラクタ・デストラクタ

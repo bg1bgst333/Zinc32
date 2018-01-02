@@ -175,6 +175,47 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam){
 			// 既定の処理へ向かう.
 			break;	// breakで抜けて, 既定の処理(DefWindowProc)へ向かう.
 
+		// ウィンドウサイズが変更された時.
+		case WM_SIZE:
+
+			// WM_SIZEブロック
+			{
+
+				// 外側のウィンドウの場合.
+				if (hwnd != hEdit && hwnd != hButton && hwnd != hBrowser && g_pWebBrowserHost != NULL){	// hEditでもhButtonでもhBrowserでもなく, g_pWebBrowserHostがNULLでない時.
+
+					// 変数の初期化.
+					int iWidth = 0;	// クライアント領域幅iWidth.
+					int iHeight = 0;	// クライアント領域高さiHeight.
+
+					// クライアント領域の変更後のサイズを取得.
+					iWidth = LOWORD(lParam);	// LOWORD(lParam)でクライアント領域の幅を取得し, iWidthに格納.
+					iHeight = HIWORD(lParam);	// HIWORD(lParam)でクライアント領域の高さを取得し, iHeightに格納.
+
+					// ウィンドウのサイズ変更.
+					MoveWindow(hEdit, 0, 0, iWidth - 80, 24, TRUE);	// MoveWindowでhEditのサイズを変更.
+					MoveWindow(hButton, iWidth - 80, 0, 80, 24, TRUE);	// MoveWindowでhButtonのサイズを変更.
+					MoveWindow(hBrowser, 0, 30, iWidth, iHeight - 30, TRUE);	// MoveWindowでhBrowserのサイズを変更.
+
+				}
+				if (hwnd == hBrowser){	// hBrowserの時.
+
+					// 変数の初期化.
+					RECT rc = {0, 0, LOWORD(lParam), HIWORD(lParam)};	// rcをlParamの大きさで初期化.
+					IOleInPlaceObject *pOleInPlaceObject = NULL;	// pOleInPlaceObjectをNULLで初期化.
+					
+					// サイズ変更.
+					g_pWebBrowserHost->m_pWebBrowser->QueryInterface(IID_PPV_ARGS(&pOleInPlaceObject));	// QueryInterfaceでpOleInPlaceObjectを取得.
+					pOleInPlaceObject->SetObjectRects(&rc, &rc);	// SetObjectRectsでrcをセット.
+					pOleInPlaceObject->Release();	// Releaseでリリース.
+
+				}
+
+				// 既定の処理へ向かう.
+				break;	// breakで抜けて, 既定の処理(DefWindowProc)へ向かう.
+
+			}
+
 		// コマンドが発生した時.
 		case WM_COMMAND:
 
