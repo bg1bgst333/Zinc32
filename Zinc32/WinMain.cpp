@@ -2,6 +2,11 @@
 // 既定のヘッダ
 #include <tchar.h>		// TCHAR型
 #include <windows.h>	// 標準WindowsAPI
+// 独自のヘッダ
+#include "WebBrowserHost.h"	// CWebBrowserHost
+
+// グローバルオブジェクトの定義.
+CWebBrowserHost *g_pWebBrowserHost = NULL;	// ウェブブラウザホストオブジェクトのポインタg_pWebBrowserHostをNULLで初期化.
 
 // 関数のプロトタイプ宣言
 LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);	// ウィンドウプロシージャWindowProc
@@ -13,6 +18,10 @@ int WINAPI _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCmdL
 	HWND hWnd;		// HWND型ウィンドウハンドルhWnd
 	MSG msg;		// MSG型メッセージ構造体msg
 	WNDCLASS wc;	// WNDCLASS型ウィンドウクラス構造体wc
+	WNDCLASS wcBrowser;	// WNDCLASS型ウィンドウクラス構造体wcBrowser
+
+	// OLEの初期化.
+	OleInitialize(NULL);	// OleInitializeでOLEの初期化.
 
 	// ウィンドウクラス構造体wcにパラメータをセット.
 	wc.lpszClassName = _T("Zinc");	// ウィンドウクラス名はとりあえず"Zinc"とする.
@@ -31,7 +40,30 @@ int WINAPI _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCmdL
 
 		// 戻り値が0なら登録失敗なのでエラー処理.
 		MessageBox(NULL, _T("予期せぬエラーが発生しました!(-1)"), _T("Zinc"), MB_OK | MB_ICONHAND);	// MessageBoxで"予期せぬエラーが発生しました!(-1)"と表示.
+		OleUninitialize();	// OleInitializeでOLEの終了処理.
 		return -1;	// returnで-1を返して異常終了.
+
+	}
+
+	// ウィンドウクラス構造体wcBrowserにパラメータをセット.
+	wcBrowser.lpszClassName = _T("Browser");	// ウィンドウクラス名はとりあえず"Browser"とする.
+	wcBrowser.style = 0;	// スタイルはとりあえず0にする.
+	wcBrowser.lpfnWndProc = WindowProc;	// ウィンドウプロシージャには下で定義するWindowProcを指定する.
+	wcBrowser.hInstance = hInstance;	// アプリケーションインスタンスハンドルは引数のhInstanceを使う.
+	wcBrowser.hIcon = LoadIcon(NULL, IDI_APPLICATION);	// LoadIconでアプリケーション既定のアイコンをロード.
+	wcBrowser.hCursor = LoadCursor(NULL, IDC_ARROW);	// LoadCursorでアプリケーション既定のカーソルをロード.
+	wcBrowser.hbrBackground = (HBRUSH)GetStockObject(WHITE_BRUSH);	// GetStockObjectで白ブラシを背景色とする.
+	wcBrowser.lpszMenuName = NULL;	// メニューはなし.(NULLにする.)
+	wcBrowser.cbClsExtra = 0;	// とりあえず0を指定.
+	wcBrowser.cbWndExtra = 0;	// とりあえず0を指定.
+
+	// ウィンドウクラスの登録
+	if (!RegisterClass(&wcBrowser)){	// RegisterClassでウィンドウクラスを登録する.
+
+		// 戻り値が0なら登録失敗なのでエラー処理.
+		MessageBox(NULL, _T("予期せぬエラーが発生しました!(-2)"), _T("Zinc"), MB_OK | MB_ICONHAND);	// MessageBoxで"予期せぬエラーが発生しました!(-2)"と表示.
+		OleUninitialize();	// OleInitializeでOLEの終了処理.
+		return -2;	// returnで-2を返して異常終了.
 
 	}
 
@@ -40,8 +72,9 @@ int WINAPI _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCmdL
 	if (hWnd == NULL){	// hWndがNULLならウィンドウ作成失敗.
 
 		// エラー処理
-		MessageBox(NULL, _T("予期せぬエラーが発生しました!(-2)"), _T("Zinc"), MB_OK | MB_ICONHAND);	// MessageBoxで"予期せぬエラーが発生しました!(-2)"と表示.
-		return -2;	// returnで-2を返して異常終了.
+		MessageBox(NULL, _T("予期せぬエラーが発生しました!(-3)"), _T("Zinc"), MB_OK | MB_ICONHAND);	// MessageBoxで"予期せぬエラーが発生しました!(-3)"と表示.
+		OleUninitialize();	// OleInitializeでOLEの終了処理.
+		return -3;	// returnで-3を返して異常終了.
 
 	}
 
@@ -57,6 +90,13 @@ int WINAPI _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCmdL
 
 	}
 
+	// g_pWebBrowserHostの解放.
+	delete g_pWebBrowserHost;	// deleteでg_pWebBrowserHostを解放.
+	g_pWebBrowserHost = NULL;	// g_pWebBrowserHostにNULLをセット.
+
+	// OLEの終了処理.
+	OleUninitialize();	// OleInitializeでOLEの終了処理.
+
 	// プログラムの終了
 	return (int)msg.wParam;	// 終了コード(msg.wParam)を戻り値として返す.
 
@@ -68,6 +108,7 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam){
 	// スタティック変数の初期化.
 	static HWND hEdit = NULL;	// エディットコントロールのウィンドウハンドルhEditをNULLで初期化.
 	static HWND hButton = NULL;	// ボタンコントロールのウィンドウハンドルhButtonをNULLで初期化.
+	static HWND hBrowser = NULL;	// ウェブブラウザコントロールのウィンドウハンドルhBrowserをNULLで初期化.
 
 	// ウィンドウメッセージの処理.
 	switch (uMsg){	// uMsgの値ごとに処理を振り分ける.
@@ -84,11 +125,28 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam){
 				// lpCSの取得.
 				lpCS = (LPCREATESTRUCT)lParam;	// lParamをLPCREATESTRUCTにキャストして, lpCSに格納.
 
-				// エディットコントロールの作成
-				hEdit = CreateWindow(_T("Edit"), _T(""), WS_CHILD | WS_VISIBLE | WS_BORDER | ES_WANTRETURN, 0, 0, 640, 24, hwnd, (HMENU)(WM_APP + 1), lpCS->hInstance, NULL);	// CreateWindowでエディットコントロールhEditを作成.(ウィンドウクラス名は"Edit".)
+				// CWebBrowserHostオブジェクトが生成される前.
+				if (g_pWebBrowserHost == NULL){
 
-				// ボタンコントロールの作成
-				hButton = CreateWindow(_T("Button"), _T("ロード"), WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON, 640, 0, 80, 24, hwnd, (HMENU)(WM_APP + 2), lpCS->hInstance, NULL);	// CreateWindowでボタンコントロールhButtonを作成.(ウィンドウクラス名は"Button".)
+					// エディットコントロールの作成
+					hEdit = CreateWindow(_T("Edit"), _T(""), WS_CHILD | WS_VISIBLE | WS_BORDER | ES_WANTRETURN, 0, 0, 640, 24, hwnd, (HMENU)(WM_APP + 1), lpCS->hInstance, NULL);	// CreateWindowでエディットコントロールhEditを作成.(ウィンドウクラス名は"Edit".)
+
+					// ボタンコントロールの作成
+					hButton = CreateWindow(_T("Button"), _T("ロード"), WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON, 640, 0, 80, 24, hwnd, (HMENU)(WM_APP + 2), lpCS->hInstance, NULL);	// CreateWindowでボタンコントロールhButtonを作成.(ウィンドウクラス名は"Button".)
+
+					// CWebBrowserHostオブジェクトの生成.
+					g_pWebBrowserHost = new CWebBrowserHost();	// CWebBrowserHostの生成.
+
+					// ウェブブラウザコントロールの作成
+					hBrowser = CreateWindow(_T("Browser"), _T(""), WS_CHILD | WS_VISIBLE | WS_BORDER, 0, 30, 640, 510, hwnd, (HMENU)(WM_APP + 3), lpCS->hInstance, NULL);	// CreateWindowでウェブブラウザコントロールとなるウィンドウhBrowserを作成.(ウィンドウクラス名は"Browser".)
+					
+				}
+				if (g_pWebBrowserHost != NULL && hBrowser != NULL){	// g_pWebBrowserHostがNULLでなく, hBrowserもNULLでない時.
+
+					// g_pWebBrowserHostとhBrowserを紐付ける.
+					g_pWebBrowserHost->Attach(hBrowser);	// g_pWebBrowserHost->AttachにhBrowserをセット.
+
+				}
 
 				// 常にウィンドウ作成に成功するものとする.
 				return 0;	// 0を返すと, ウィンドウ作成に成功したということになる.
@@ -104,8 +162,13 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam){
 			// WM_DESTROYブロック
 			{
 
-				// 終了メッセージの送信.
-				PostQuitMessage(0);	// PostQuitMessageで終了コードを0としてWM_QUITメッセージを送信.
+				// hwndが親ウィンドウの場合.
+				if (hwnd != hEdit && hwnd != hButton && hwnd != hBrowser && g_pWebBrowserHost != NULL){	// hEditでもhButtonでもhBrowserでもなく, g_pWebBrowserHostがNULLでない時.
+
+					// 終了メッセージの送信.
+					PostQuitMessage(0);	// PostQuitMessageで終了コードを0としてWM_QUITメッセージを送信.
+
+				}
 
 			}
 
@@ -130,7 +193,7 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam){
 							// 入力されたURLを表示.
 							TCHAR tszUrl[4096] = {0};	// tszUrlを{0}で初期化.
 							GetWindowText(hEdit, tszUrl, 4096);	// GetWindowTextでhEditにセットされたテキストを取得し, tszUrlに格納.
-							MessageBox(NULL, tszUrl, _T("Zinc"), MB_OK | MB_ICONASTERISK);	// MessageBoxでtszUrlを表示.
+							g_pWebBrowserHost->Navigate(tszUrl);	// g_pWebBrowserHost->NavigateでtszUrlをロード.
 
 						}
 
