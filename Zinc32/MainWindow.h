@@ -6,6 +6,8 @@
 // 既定のヘッダ
 #include <string>	// std::string
 // 独自のヘッダ
+#include "Edit.h"	// CEdit
+#include "Button.h"	// CButton
 #include "Window.h"	// CWindow
 
 // マクロの定義
@@ -22,6 +24,10 @@ class CMainWindow : public CWindow{
 	// publicメンバ
 	public:
 
+		// publicメンバ変数
+		CEdit *m_pEdit;	// CEditオブジェクトポインタm_pEdit.
+		CButton *m_pButton;	// CButtonオブジェクトポインタm_pButton.
+
 		// publicメンバ関数
 		// コンストラクタ・デストラクタ
 		CMainWindow();	// コンストラクタCMainWindow()
@@ -32,6 +38,7 @@ class CMainWindow : public CWindow{
 		virtual BOOL Create(LPCTSTR lpctszWindowName, DWORD dwStyle, int x, int y, int iWidth, int iHeight, HWND hWndParent, HMENU hMenu, HINSTANCE hInstance);	// ウィンドウ作成関数Create.(ウィンドウクラス名省略バージョン.)
 		virtual int OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct);	// ウィンドウの作成が開始された時.
 		virtual void OnDestroy();	// ウィンドウが破棄された時.
+		virtual void OnSize(UINT nType, int cx, int cy);	// ウィンドウのサイズが変更された時.
 		virtual BOOL OnCommand(WPARAM wParam, LPARAM lParam);	// コマンドが発生した時.
 
 };

@@ -179,6 +179,18 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Button.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\CustomControl.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Edit.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\MainApplication.cpp"
 				>
 			</File>
@@ -206,6 +218,18 @@
 			>
 			<File
 				RelativePath=".\Application.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Button.h"
+				>
+			</File>
+			<File
+				RelativePath=".\CustomControl.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Edit.h"
 				>
 			</File>
 			<File

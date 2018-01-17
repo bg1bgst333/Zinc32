@@ -6,7 +6,16 @@
 // 既定のヘッダ
 #include <tchar.h>		// TCHAR型
 #include <windows.h>	// 標準WindowsAPI
+#include <string>	// std::string
 #include <map>	// std::map
+
+// マクロの定義
+// UNICODE切り替え
+#ifdef UNICODE
+#define tstring std::wstring
+#else
+#define tstring std::string
+#endif
 
 // ウィンドウクラスCWindow
 class CWindow{
@@ -35,9 +44,13 @@ class CWindow{
 		virtual BOOL Create(LPCTSTR lpctszWindowName, DWORD dwStyle, int x, int y, int iWidth, int iHeight, HWND hWndParent, HMENU hMenu, HINSTANCE hInstance);	// ウィンドウ作成関数Create.(ウィンドウクラス名省略バージョン.)
 		virtual BOOL Create(LPCTSTR lpctszClassName, LPCTSTR lpctszWindowName, DWORD dwStyle, int x, int y, int iWidth, int iHeight, HWND hWndParent, HMENU hMenu, HINSTANCE hInstance);	// ウィンドウ作成関数Create.
 		virtual BOOL ShowWindow(int nCmdShow);	// ウィンドウ表示関数ShowWindow.
+		virtual void SetText(LPCTSTR lpctszText);	// テキストセット関数SetText.
+		virtual int GetTextLength();	// テキストの長さ取得関数GetTextLength.
+		virtual tstring GetText();	// テキスト取得関数GetText.
 		virtual LRESULT DynamicWindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);	// ダイナミックウィンドウプロシージャDynamicWindowProc.
 		virtual int OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct);	// ウィンドウの作成が開始された時.
 		virtual void OnDestroy();	// ウィンドウが破棄された時.
+		virtual void OnSize(UINT nType, int cx, int cy);	// ウィンドウのサイズが変更された時.
 		virtual BOOL OnCommand(WPARAM wParam, LPARAM lParam);	// コマンドが発生した時.
 
 };
