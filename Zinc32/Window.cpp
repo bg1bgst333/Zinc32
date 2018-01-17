@@ -4,6 +4,7 @@
 
 // staticメンバ変数の定義.
 std::map<HWND, CWindow *> CWindow::m_mapWindowMap;	// ウィンドウマップm_mapWindowMap.
+std::map<DWORD, HandlerConditions *> CWindow::m_mapHandlerMap;	// ハンドラマップm_mapHandlerMap.
 
 // コンストラクタCWindow()
 CWindow::CWindow(){
@@ -185,6 +186,32 @@ BOOL CWindow::ShowWindow(int nCmdShow){
 
 }
 
+// コマンドハンドラの追加.
+void CWindow::AddCommandHandler(UINT nID, UINT nCode, int(CWindow:: * handler)(WPARAM wParam, LPARAM lParam)){
+
+	// HandlerConditionsの生成と追加.
+	HandlerConditions *pCond = new HandlerConditions();	// HandlerConditionsオブジェクトを作成し, ポインタをpCondに格納.
+	pCond->m_nID = nID;	// pCond->m_nIDにnIDを格納.
+	pCond->m_nCode = nCode;	// pCond->m_nCodeにnCodeを格納.
+	pCond->m_fpHandler = handler;	// pCond->m_fpHandlerにhandlerを格納.
+	m_mapHandlerMap.insert(std::pair<DWORD, HandlerConditions *>((DWORD)MAKEWPARAM(nID, nCode), pCond));	// m_mapHandlerMap.insertでnID, nCodeをMAKEWPARAMしたものをキー, pCondを値として登録.
+
+}
+
+// コマンドハンドラの削除.
+void CWindow::DeleteCommandHandler(UINT nID, UINT nCode){
+
+	// ハンドラマップから指定のハンドラ情報を削除.
+	HandlerConditions *pCond = NULL;	// HandlerConditionsオブジェクトポインタpCondをNULLに初期化.
+	std::map<DWORD, HandlerConditions *>::iterator itor = m_mapHandlerMap.find((DWORD)(MAKEWPARAM(nID, nCode)));	// findでキーを(DWORD)(MAKEWPARAM(nID, nCode))とするHandlerConditionsオブジェクトポインタのイテレータを取得.
+	if (itor != m_mapHandlerMap.end()){	// 見つかったら.
+		pCond = m_mapHandlerMap[(DWORD)(MAKEWPARAM(nID, nCode))];	// (DWORD)(MAKEWPARAM(nID, nCode))を使ってハンドラマップからHandlerConditionsオブジェクトポインタを引き出す.
+		delete pCond;	// HandlerConditionsオブジェクトを破棄.
+		m_mapHandlerMap.erase(itor);	// itorの指す要素を削除.
+	}
+
+}
+
 // テキストセット関数SetText.
 void CWindow::SetText(LPCTSTR lpctszText){
 
@@ -328,6 +355,18 @@ void CWindow::OnSize(UINT nType, int cx, int cy){
 
 // コマンドが発生した時.
 BOOL CWindow::OnCommand(WPARAM wParam, LPARAM lParam){
+
+	// wParamからハンドラ情報を引き出す.
+	HandlerConditions *pCond = NULL;	// HandlerConditionsオブジェクトポインタpCondをNULLに初期化.
+	if (m_mapHandlerMap.find(wParam) != m_mapHandlerMap.end()){	// findでキーをwParamとするHandlerConditionsオブジェクトポインタが見つかったら.
+		pCond = m_mapHandlerMap[wParam];	// wParamでキーが取得できるので, それを使ってハンドラマップからHandlerConditionsオブジェクトポインタを引き出す.
+	}
+	if (pCond != NULL){	// pCondがNULLでないなら, ハンドラ登録されている.
+		int iRet = (this->*pCond->m_fpHandler)(wParam, lParam);	// 登録したハンドラpCond->m_fpHandlerを呼び出し, 戻り値はiRetに格納.
+		if (iRet == 0){	// 0なら処理をした.
+			return TRUE;	// 処理をしたのでTRUE.
+		}
+	}
 
 	// 処理していないのでFALSE.
 	return FALSE;	// returnでFALSEを返す.

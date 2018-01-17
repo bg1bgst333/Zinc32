@@ -60,6 +60,9 @@ int CMainWindow::OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct){
 	// ボタンコントロールのウィンドウ作成.
 	m_pButton->Create(_T("ロード"), BS_PUSHBUTTON, 640, 0, 80, 24, hwnd, (HMENU)(WM_APP + 2), lpCreateStruct->hInstance);	// m_pButton->Createで作成.
 
+	// ボタンハンドラの追加.
+	AddCommandHandler(WM_APP + 2, BN_CLICKED, (int(CWindow::*)(WPARAM, LPARAM))&CMainWindow::OnLoad);	// AddCommandHandlerでWM_APP + 2に対するハンドラCMainWindow::OnLoadを登録.
+
 	// 常にウィンドウ作成に成功するものとする.
 	return 0;	// 0を返すと, ウィンドウ作成に成功したということになる.
 
@@ -67,6 +70,9 @@ int CMainWindow::OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct){
 
 // ウィンドウが破棄された時.
 void CMainWindow::OnDestroy(){
+
+	// ハンドラの削除.
+	DeleteCommandHandler(WM_APP + 2, BN_CLICKED);	// DeleteCommandHandlerでWM_APP + 2, BN_CLICKEDのハンドラを削除.
 
 	// 子ウィンドウオブジェクトの破棄.
 	if (m_pEdit != NULL){	// m_pEditがNULLでなければ.
@@ -97,10 +103,11 @@ void CMainWindow::OnSize(UINT nType, int cx, int cy){
 
 }
 
-// コマンドが発生した時.
-BOOL CMainWindow::OnCommand(WPARAM wParam, LPARAM lParam){
+// "ロード"ボタンが押された時のハンドラ.
+int CMainWindow::OnLoad(WPARAM wParam, LPARAM lParam){
 
-	// 処理していないのでFALSE.
-	return FALSE;	// returnでFALSEを返す.
+	// m_pEditに入力されたテキストを表示.
+	MessageBox(m_hWnd, m_pEdit->GetText().c_str(), _T("Zinc"), MB_OK | MB_ICONASTERISK);	// MessageBoxでm_pEdit->GetTextで取得したテキストを表示.
+	return 0;	// 0を返す.
 
 }
