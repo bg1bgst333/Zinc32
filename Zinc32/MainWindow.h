@@ -6,9 +6,10 @@
 // 既定のヘッダ
 #include <string>	// std::string
 // 独自のヘッダ
+#include "Window.h"	// CWindow
 #include "Edit.h"	// CEdit
 #include "Button.h"	// CButton
-#include "Window.h"	// CWindow
+#include "WebBrowser.h"	// CWebBrowser
 
 // マクロの定義
 // UNICODE切り替え
@@ -27,6 +28,7 @@ class CMainWindow : public CWindow{
 		// publicメンバ変数
 		CEdit *m_pEdit;	// CEditオブジェクトポインタm_pEdit.
 		CButton *m_pButton;	// CButtonオブジェクトポインタm_pButton.
+		CWebBrowser *m_pWebBrowser;	// CWebBrowserオブジェクトポインタm_pWebBrowser.
 
 		// publicメンバ関数
 		// コンストラクタ・デストラクタ

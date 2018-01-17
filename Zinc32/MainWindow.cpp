@@ -9,6 +9,7 @@ CMainWindow::CMainWindow() : CWindow(){
 	// メンバの初期化.
 	m_pEdit = NULL;	// m_pEditをNULLで初期化.
 	m_pButton = NULL;	// m_pButtonをNULLで初期化.
+	m_pWebBrowser = NULL;	// m_pWebBrowserをNULLで初期化.
 
 }
 
@@ -25,6 +26,11 @@ CMainWindow::~CMainWindow(){
 		DestroyWindow(m_pButton->m_hWnd);	// DestroyWindowでm_pStatic->m_hWndを破棄.
 		delete m_pButton;	// deleteでm_pButtonを解放.
 		m_pButton = NULL;	// m_pButtonにNULLをセット.
+	}
+	if (m_pWebBrowser != NULL){	// m_pWebBrowserがNULLでなければ.
+		DestroyWindow(m_pWebBrowser->m_hWnd);	// DestroyWindowでm_pWebBrowser->m_hWndを破棄.
+		delete m_pWebBrowser;	// deleteでm_pWebBrowserを解放.
+		m_pWebBrowser = NULL;	// m_pWebBrowserにNULLをセット.
 	}
 
 }
@@ -63,6 +69,12 @@ int CMainWindow::OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct){
 	// ボタンハンドラの追加.
 	AddCommandHandler(WM_APP + 2, BN_CLICKED, (int(CWindow::*)(WPARAM, LPARAM))&CMainWindow::OnLoad);	// AddCommandHandlerでWM_APP + 2に対するハンドラCMainWindow::OnLoadを登録.
 
+	// ウェブブラウザコントロールオブジェクトの作成.
+	m_pWebBrowser = new CWebBrowser();	// CWebBrowserオブジェクトの作成.
+
+	// ウェブブラウザコントロールのウィンドウ作成.
+	m_pWebBrowser->Create(_T(""), WS_BORDER, 0, 24, 640, 480 - 24, hwnd, (HMENU)(WM_APP + 3), lpCreateStruct->hInstance);	// m_pWebBrowser->Createで作成.
+
 	// 常にウィンドウ作成に成功するものとする.
 	return 0;	// 0を返すと, ウィンドウ作成に成功したということになる.
 
@@ -78,13 +90,19 @@ void CMainWindow::OnDestroy(){
 	if (m_pEdit != NULL){	// m_pEditがNULLでなければ.
 		DestroyWindow(m_pEdit->m_hWnd);	// DestroyWindowでm_pEdit->m_hWndを破棄.
 		delete m_pEdit;	// deleteでm_pEditを解放.
-		m_pEdit = NULL;	// m_pEditにNULLをセット.
+		m_pEdit = NULL;	// m_pStaticにNULLをセット.
 	}
 	if (m_pButton != NULL){	// m_pButtonがNULLでなければ.
 		DestroyWindow(m_pButton->m_hWnd);	// DestroyWindowでm_pStatic->m_hWndを破棄.
 		delete m_pButton;	// deleteでm_pButtonを解放.
 		m_pButton = NULL;	// m_pButtonにNULLをセット.
 	}
+	if (m_pWebBrowser != NULL){	// m_pWebBrowserがNULLでなければ.
+		DestroyWindow(m_pWebBrowser->m_hWnd);	// DestroyWindowでm_pWebBrowser->m_hWndを破棄.
+		delete m_pWebBrowser;	// deleteでm_pWebBrowserを解放.
+		m_pWebBrowser = NULL;	// m_pWebBrowserにNULLをセット.
+	}
+
 	// 親ウィンドウのOnDestroyを呼ぶ.
 	CWindow::OnDestroy();	// CWindow::OnDestroyを呼ぶ.
 
@@ -99,6 +117,9 @@ void CMainWindow::OnSize(UINT nType, int cx, int cy){
 	}
 	if (m_pButton != NULL){
 		MoveWindow(m_pButton->m_hWnd, cx - 80, 0, 80, 24, TRUE);	// MoveWindowでm_pButton->m_hWndのサイズを変更.
+	}
+	if (m_pWebBrowser != NULL){
+		MoveWindow(m_pWebBrowser->m_hWnd, 0, 24, cx, cy - 24, TRUE);	// MoveWindowでm_pWebBrowser->m_hWndのサイズを変更.
 	}
 
 }

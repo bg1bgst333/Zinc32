@@ -199,6 +199,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\UserControl.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\WebBrowser.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\WebBrowserHost.cpp"
 				>
 			</File>
@@ -246,6 +254,14 @@
 			</File>
 			<File
 				RelativePath=".\resource.h"
+				>
+			</File>
+			<File
+				RelativePath=".\UserControl.h"
+				>
+			</File>
+			<File
+				RelativePath=".\WebBrowser.h"
 				>
 			</File>
 			<File
