@@ -10,6 +10,7 @@ CMainWindow::CMainWindow() : CWindow(){
 	m_pEdit = NULL;	// m_pEditをNULLで初期化.
 	m_pButton = NULL;	// m_pButtonをNULLで初期化.
 	m_pWebBrowser = NULL;	// m_pWebBrowserをNULLで初期化.
+	m_pWebBrowserHost = NULL;	// m_pWebBrowserHostをNULLで初期化.
 
 }
 
@@ -32,6 +33,7 @@ CMainWindow::~CMainWindow(){
 		delete m_pWebBrowser;	// deleteでm_pWebBrowserを解放.
 		m_pWebBrowser = NULL;	// m_pWebBrowserにNULLをセット.
 	}
+	m_pWebBrowserHost = NULL;	// m_pWebBrowserHostにNULLをセット.(破棄はしない.)
 
 }
 
@@ -48,6 +50,14 @@ BOOL CMainWindow::Create(LPCTSTR lpctszWindowName, DWORD dwStyle, int x, int y, 
 
 	// ウィンドウクラス名は"CMainWindow".
 	return CWindow::Create(_T("CMainWindow"), lpctszWindowName, dwStyle, x, y, iWidth, iHeight, hWndParent, hMenu, hInstance);	// CWindow::Createにウィンドウクラス名"CMainWindow"を指定.
+
+}
+
+// WebBrowserHostのセット.
+void CMainWindow::SetWebBrowserHost(CWebBrowserHost *pWebBrowserHost){
+
+	// メンバにセット.
+	m_pWebBrowserHost = pWebBrowserHost;	// m_pWebBrowserHostにpWebBrowserHostをセット.
 
 }
 
@@ -74,6 +84,9 @@ int CMainWindow::OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct){
 
 	// ウェブブラウザコントロールのウィンドウ作成.
 	m_pWebBrowser->Create(_T(""), WS_BORDER, 0, 24, 640, 480 - 24, hwnd, (HMENU)(WM_APP + 3), lpCreateStruct->hInstance);	// m_pWebBrowser->Createで作成.
+
+	// ウェブブラウザホストのアタッチ.
+	m_pWebBrowser->Attach(m_pWebBrowserHost);	// m_pWebBrowser->Attachにm_pWebBrowserHostをアタッチ.
 
 	// 常にウィンドウ作成に成功するものとする.
 	return 0;	// 0を返すと, ウィンドウ作成に成功したということになる.
@@ -127,8 +140,12 @@ void CMainWindow::OnSize(UINT nType, int cx, int cy){
 // "ロード"ボタンが押された時のハンドラ.
 int CMainWindow::OnLoad(WPARAM wParam, LPARAM lParam){
 
-	// m_pEditに入力されたテキストを表示.
-	MessageBox(m_hWnd, m_pEdit->GetText().c_str(), _T("Zinc"), MB_OK | MB_ICONASTERISK);	// MessageBoxでm_pEdit->GetTextで取得したテキストを表示.
+	// 入力されたURLのWebページをロード.
+	if (m_pWebBrowser != NULL && m_pEdit != NULL){	// m_pWebBrowserがNULLでなく, m_pEditもNULLでない場合.
+		m_pWebBrowser->Navigate(m_pEdit->GetText().c_str());	// m_pEdit->GetTextで取得したURLをm_pWebBrowser->Navigateでロード.
+	}
+
+	// 処理されたので0を返す.
 	return 0;	// 0を返す.
 
 }

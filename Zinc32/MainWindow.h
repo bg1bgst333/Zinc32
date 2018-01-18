@@ -10,6 +10,7 @@
 #include "Edit.h"	// CEdit
 #include "Button.h"	// CButton
 #include "WebBrowser.h"	// CWebBrowser
+#include "WebBrowserHost.h"	// CWebBrowserHost
 
 // マクロの定義
 // UNICODE切り替え
@@ -21,6 +22,12 @@
 
 // メインウィンドウクラスCMainWindow
 class CMainWindow : public CWindow{
+
+	// privateメンバ
+	public:
+
+		// privateメンバ変数
+		CWebBrowserHost *m_pWebBrowserHost;	// CWebBrowserHostオブジェクトポインタm_pWebBrowserHost.
 
 	// publicメンバ
 	public:
@@ -38,6 +45,7 @@ class CMainWindow : public CWindow{
 		static BOOL RegisterClass(HINSTANCE hInstance);	// ウィンドウクラス登録関数RegisterClass.
 		// メンバ関数
 		virtual BOOL Create(LPCTSTR lpctszWindowName, DWORD dwStyle, int x, int y, int iWidth, int iHeight, HWND hWndParent, HMENU hMenu, HINSTANCE hInstance);	// ウィンドウ作成関数Create.(ウィンドウクラス名省略バージョン.)
+		void SetWebBrowserHost(CWebBrowserHost *pWebBrowserHost);	// WebBrowserHostのセット.
 		virtual int OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct);	// ウィンドウの作成が開始された時.
 		virtual void OnDestroy();	// ウィンドウが破棄された時.
 		virtual void OnSize(UINT nType, int cx, int cy);	// ウィンドウのサイズが変更された時.
