@@ -37,6 +37,17 @@
         "PrivateKeyFile" = "8:"
         "TimeStampServer" = "8:"
         "InstallerBootstrapper" = "3:2"
+            "BootstrapperCfg:{63ACBE69-63AA-4F98-B2B6-99F9E24495F2}"
+            {
+            "Enabled" = "11:TRUE"
+            "PromptEnabled" = "11:TRUE"
+            "PrerequisitesLocation" = "2:1"
+            "Url" = "8:"
+            "ComponentsUrl" = "8:"
+                "Items"
+                {
+                }
+            }
         }
         "Release"
         {
@@ -53,6 +64,17 @@
         "PrivateKeyFile" = "8:"
         "TimeStampServer" = "8:"
         "InstallerBootstrapper" = "3:2"
+            "BootstrapperCfg:{63ACBE69-63AA-4F98-B2B6-99F9E24495F2}"
+            {
+            "Enabled" = "11:TRUE"
+            "PromptEnabled" = "11:TRUE"
+            "PrerequisitesLocation" = "2:1"
+            "Url" = "8:"
+            "ComponentsUrl" = "8:"
+                "Items"
+                {
+                }
+            }
         }
     }
     "Deployable"
@@ -140,14 +162,14 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:Zinc"
-        "ProductCode" = "8:{6B49E40A-74E5-40D8-B1D6-4757A3BC2A34}"
-        "PackageCode" = "8:{8AC02DA6-7439-4C93-91FD-FB47E94AECA0}"
+        "ProductCode" = "8:{92D0C67E-64D1-4106-8ABB-A877709DC30C}"
+        "PackageCode" = "8:{C64970D7-1228-4958-8FCD-AF011A9E5A0A}"
         "UpgradeCode" = "8:{1F59D05B-CCDE-45E1-91E3-D3825943AA4F}"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:FALSE"
-        "ProductVersion" = "8:0.0.0"
+        "ProductVersion" = "8:0.0.1"
         "Manufacturer" = "8:B.G-STATION"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:"
